@@ -18,7 +18,7 @@ namespace MyFileUtility
 	{
 		if (de.status().type() == file_type::regular) {
 			//нд╪Ч
-			std::string str = de.path().root_path().string();
+			std::string str = de.path().filename().string();
 			if (str.find(key) != str.npos) {
 				file_list.push_back(de.path().string());
 			}

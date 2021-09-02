@@ -11,16 +11,16 @@ namespace MyFileUtility
 		}
 		directory_entry dr(dir_path);
 
-		return FindMatchedFileNameListByIterator(dr, key, file_list);
+		return FindMatchedFileNameListByEntry(dr, key, file_list);
 	}
-	bool FindMatchedFileNameListByIterator(const directory_entry& de, const std::string& key,
-		std::list<std::string>& file_list) 
+	bool FindMatchedFileNameListByEntry(const directory_entry& de, const std::string& key,
+		std::list<std::string>& file_list)
 	{
 		if (de.status().type() == file_type::regular) {
 			//нд╪Ч
-			std::string str = de.path().filename().string();
+			std::string str = de.path().root_path().string();
 			if (str.find(key) != str.npos) {
-				file_list.push_back(str);
+				file_list.push_back(de.path().string());
 			}
 			return true;
 		}
@@ -35,13 +35,13 @@ namespace MyFileUtility
 			{
 				std::string str = it.path().filename().string();
 				if (str.find(key) != str.npos) {
-					file_list.push_back(str);
+					file_list.push_back(it.path().string());
 				}
 			}
 			break;
 			case file_type::directory:
 			{
-				FindMatchedFileNameListByIterator(it, key, file_list);
+				FindMatchedFileNameListByEntry(it, key, file_list);
 			}
 			break;
 			default:

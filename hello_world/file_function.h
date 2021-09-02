@@ -9,6 +9,6 @@ namespace MyFileUtility
 	bool FindMatchedFileNameList(const std::string& dir_path,const std::string& key,
 		std::list<std::string>& file_list);
 
-	bool FindMatchedFileNameListByIterator(const directory_entry& di, const std::string& key,
+	bool FindMatchedFileNameListByEntry(const directory_entry& di, const std::string& key,
 		std::list<std::string>& file_list);
 }

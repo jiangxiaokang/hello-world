@@ -2,8 +2,8 @@
 #include <libgen.h>//basename
 #include <iostream>
 #include <cstdlib>
-#include <netinet/in.h> //sockaddr_in
 #include <cstring>
+#include <arpa/inet.h>//#include <netinet/in.h> //sockaddr_in
 
 int main(int argc,char* argv[]){
     if(argc <= 2){
@@ -15,6 +15,9 @@ int main(int argc,char* argv[]){
     int port = atoi(argv[2]);
     struct sockaddr_in server_address;
     bzero(&server_address,sizeof(server_address));
+    server_address.sin_family = AF_INET;
+    inet_pton(AF_INET,ip,&server_address.sin_addr);
+    server_address.sin_port = htons(port);
     
     return 0;
 }

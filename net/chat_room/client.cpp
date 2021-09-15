@@ -35,12 +35,12 @@ int main(int argc,char* argv[]){
     fds[1].events = POLLIN|POLLHUP;
     fds[1].revents = 0;
     char read_buf[BUFFER_SIZE];
-    int pipefd[2];
-    int ret = pipe(pipefd);
-    assert(ret != -1);
+    // int pipefd[2];
+    // int ret = pipe(pipefd);
+    // assert(ret != -1);
     while (true)
     {
-        ret = poll(fds,2,-1);
+        int ret = poll(fds,2,-1);
         if(ret < 0){
             break;
         }
@@ -54,8 +54,13 @@ int main(int argc,char* argv[]){
             std::cout <<read_buf<<std::endl;
         }
         if(fds[0].revents&POLLIN){
-            ret = splice(STDIN_FILENO,nullptr,pipefd[1],nullptr,32768,SPLICE_F_MORE|SPLICE_F_MOVE);
-            ret = splice(pipefd[0],nullptr,sockfd,nullptr,32768,SPLICE_F_MORE|SPLICE_F_MOVE);
+            //ret = splice(STDIN_FILENO,nullptr,pipefd[1],nullptr,32768,SPLICE_F_MORE|SPLICE_F_MOVE);
+            //ret = splice(pipefd[0],nullptr,sockfd,nullptr,32768,SPLICE_F_MORE|SPLICE_F_MOVE);
+            //标准输入数据写入sockfd
+            ssize_t n_size = read(STDIN_FILENO,read_buf,BUFFER_SIZE);
+            if(n_size>0){
+                write(sockfd,read_buf,n_size);
+            }
         }
     }
     close(sockfd);

@@ -74,7 +74,7 @@ int main(int argc,char* argv[]){
         std::cout<<"usage:"<<basename(argv[0])<<" ip_address port_number"<<std::endl;
         return 1;
     }
-   int tcp_fd =  InitSocket(argv[1],argv[2],SOCK_STREAM,5);
+   int tcp_fd = InitSocket(argv[1],argv[2],SOCK_STREAM,5);
    int upd_fd = InitSocket(argv[1],argv[2],SOCK_DGRAM,0);
    epoll_event events[MAX_EVENT_NUMBER];
    int epollfd = epoll_create(5);

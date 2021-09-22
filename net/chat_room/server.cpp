@@ -5,6 +5,7 @@
 #include <cstring>
 #include <poll.h>
 #include <unistd.h>
+#include <cassert>
 
 #define USER_LIMIT 5
 #define BUFFER_SIZE 64

@@ -13,7 +13,7 @@ namespace NET_UTILITY{
      void addepollfd(int epollfd,int fd){
          epoll_event event;
          event.data.fd = fd;
-         event.events = EPOLLIN|EPOLLET:
+         event.events = EPOLLIN|EPOLLET;
          epoll_ctl(epollfd,EPOLL_CTL_ADD,fd,&event);
          setnonblocking(fd);
      }

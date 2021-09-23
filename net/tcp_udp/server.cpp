@@ -2,6 +2,11 @@
 #include <libgen.h>
 #include <arpa/inet.h>
 #include "../include/net_utility.h"
+#include <cstring>
+#include <sys/epoll.h>
+#include <assert.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #define MAX_EVENT_NUMBER 1024
 #define TCP_BUFFER_SIZE 512
@@ -60,9 +65,9 @@ void deal_udp_conn(int udp_fd){
     memset(buf,'\0',UDP_BUFFER_SIZE);
     struct sockaddr_in client_address;
     socklen_t client_addr_len = sizeof(client_address);
-    int ret = recvfrom(udp_fd,buf,UDP_BUFFER_SIZE-1,0,(struct sockaddr*)*client_address,&client_addr_len);
+    int ret = recvfrom(udp_fd,buf,UDP_BUFFER_SIZE-1,0,(struct sockaddr*)&client_address,&client_addr_len);
     if(ret > 0){
-        sendto(udp_fd,buf,UDP_BUFFER_SIZE-1,0,(struct sockaddr*)&client_address,&client_addr_len);
+        sendto(udp_fd,buf,UDP_BUFFER_SIZE-1,0,(struct sockaddr*)&client_address, client_addr_len);
     }
     else{
         std::cerr<<"recv udp error ret = "<<ret <<std::endl;
@@ -89,27 +94,19 @@ int main(int argc,char* argv[]){
        }
        for(int i =0;i<number;++i){
            int sockfd = events[i].data.fd;
-           switch (sockfd){
-            case tcp_fd:
-                {
-                    int connfd = accept_tcp_conn(tcp_fd);
-                    addfd(epollfd,connfd);
-                }
-                break;
-            case upd_fd:
+           if(sockfd == tcp_fd){
+                int connfd = accept_tcp_conn(tcp_fd);
+                NET_UTILITY::addepollfd(epollfd,connfd);
+           }
+           else if(sockfd == upd_fd){
                 deal_udp_conn(upd_fd);
-                break;
-            default:
-                {
-                    if(events[i].events & EPOLLIN){
-                        deal_tcp_conn(sockfd);
-                    }
-                    else{
-                        std::cerr<<"invalid hanlder"<<std::endl;
-                    }
-                }
-                break;
-            }
+           }
+           else if(events[i].events & EPOLLIN){
+                deal_tcp_conn(sockfd);
+           }
+           else{
+                std::cerr<<"invalid hanlder"<<std::endl;
+           }
        }
    }
    close(tcp_fd);

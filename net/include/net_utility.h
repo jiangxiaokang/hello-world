@@ -3,7 +3,7 @@
 
 namespace NET_UTILITY{
     int setnonblocking(int fd);
-    void addepollfd(int epollfd,int fd)
+    void addepollfd(int epollfd,int fd);
 }
 
 #endif
